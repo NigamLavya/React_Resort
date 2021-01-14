@@ -4,33 +4,33 @@ import items from './data'
 const RoomContext = React.createContext();
 
 class RoomProvider extends Component {
-    state={
-        rooms:[],
-        featuredRooms:[],
-        sortedRooms:[],
-        loading:true
+    state = {
+        rooms: [],
+        featuredRooms: [],
+        sortedRooms: [],
+        loading: true
     }
-    componentDidMount(){
+    componentDidMount() {
         // get Data
         let rooms = this.formatData(items);
-        let featuredRooms = rooms.filter((room)=>room.featured);
+        let featuredRooms = rooms.filter((room) => room.featured);
         this.setState({
-            rooms,featuredRooms,sortedRooms:rooms,loading:false
+            rooms, featuredRooms, sortedRooms: rooms, loading: false
         })
     }
 
-    formatData(items){
-        return items.map((item)=>{
+    formatData(items) {
+        return items.map((item) => {
             let id = item.sys.id;
-            let images = item.fields.images.map((image)=>image.fields.file.url)
-            let room = {...item.fields,images,id}
+            let images = item.fields.images.map((image) => image.fields.file.url)
+            let room = { ...item.fields, images, id }
             return room;
         })
     }
 
     render() {
         return (
-            <RoomContext.Provider value={{...this.state}}>
+            <RoomContext.Provider value={{ ...this.state }}>
                 {this.props.children}
             </RoomContext.Provider>
         )
