@@ -15,15 +15,14 @@ function App() {
   <>
     <Navbar/>
     <Switch>
-      <Route exact path="/">
-        <Home />
+      <Route exact path="/" component={Home}>
       </Route>
-      <Route exact path="/rooms">
-        <Rooms />
+      <Route exact path="/rooms"  component={Rooms}>
       </Route>
+      {/* with component={} way you get history and all in props of your component */}
       <Route exact path="/rooms/:id" component={SingleRoom}>
-        <SingleRoom />
       </Route>
+      {/* with children way you cannot get history and all in props of your component */}
       <Route exact path="*">
         <Error />
       </Route>
