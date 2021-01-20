@@ -27,7 +27,7 @@ class RoomProvider extends Component {
         let maxSize = Math.max(...rooms.map(item => item.size))
         console.log(maxSize);
         this.setState({
-            rooms, featuredRooms, sortedRooms: rooms, loading: false, maxPrice, maxSize
+            rooms, featuredRooms, sortedRooms: rooms, loading: false, maxPrice, maxSize, price: maxPrice
         })
     }
 
@@ -45,7 +45,7 @@ class RoomProvider extends Component {
     }
 
     handleChange = event => {
-        let value = event.type === "checkbox" ? event.target.checked : event.target.value;
+        let value = event.target.type === "checkbox" ? event.target.checked : event.target.value;
         let name = event.target.name;
         this.setState({
             [name]: value
@@ -53,11 +53,12 @@ class RoomProvider extends Component {
     }
 
     filterRooms() {
-        let { rooms, type, capacity } = this.state
+        let { rooms, type, capacity, price, maxPrice, minSize, maxSize, breakfast, pets } = this.state
         // initialize tempRooms
         let tempRooms = rooms
         // transform values
         capacity = parseInt(capacity);
+        price = parseInt(price);
 
         // type filter logic
         if (type !== 'all') {
@@ -65,7 +66,21 @@ class RoomProvider extends Component {
         }
         // capacity filter logic
         if (capacity != 1) {
-            tempRooms = tempRooms.filter(item => item.capacity ===capacity)
+            tempRooms = tempRooms.filter(item => item.capacity >= capacity)
+        }
+        // price filter logic
+        if (price !== maxPrice) {
+            tempRooms = tempRooms.filter(item => item.price <= price)
+        }
+        // size filter logic
+        tempRooms = tempRooms.filter(item => item.size >= minSize && item.size <= maxSize)
+        // breakfast checkbox
+        if(breakfast){
+            tempRooms = tempRooms.filter(item => item.breakfast)
+        }
+        // pets checkbox
+        if(pets){
+            tempRooms = tempRooms.filter(item => item.pets)
         }
 
         this.setState({
