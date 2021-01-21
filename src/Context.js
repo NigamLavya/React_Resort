@@ -1,5 +1,12 @@
 import React, { Component } from 'react'
-import items from './data'
+// import items from './data'
+
+const contentful = require("contentful");
+
+const client = contentful.createClient({
+    space: process.env.REACT_APP_API_SPACE,
+    accessToken: process.env.REACT_APP_API_ACCESS_TOKEN
+})
 
 const RoomContext = React.createContext();
 
@@ -19,16 +26,26 @@ class RoomProvider extends Component {
         breakfast: false,
         pets: false
     }
+
+    getData = async () => {
+        try {
+            const response = await client.getEntries({ content_type: 'resortApp' });
+            let rooms = this.formatData(response.items);
+            let featuredRooms = rooms.filter((room) => room.featured);
+            let maxPrice = Math.max(...rooms.map(item => item.price))
+            let maxSize = Math.max(...rooms.map(item => item.size))
+            this.setState({
+                rooms, featuredRooms, sortedRooms: rooms, loading: false, maxPrice, maxSize, price: maxPrice
+            })
+        } catch (error) {
+            console.log(error);
+        }
+
+    }
+
     componentDidMount() {
         // get Data
-        let rooms = this.formatData(items);
-        let featuredRooms = rooms.filter((room) => room.featured);
-        let maxPrice = Math.max(...rooms.map(item => item.price))
-        let maxSize = Math.max(...rooms.map(item => item.size))
-        console.log(maxSize);
-        this.setState({
-            rooms, featuredRooms, sortedRooms: rooms, loading: false, maxPrice, maxSize, price: maxPrice
-        })
+        this.getData();
     }
 
     formatData(items) {
@@ -75,11 +92,11 @@ class RoomProvider extends Component {
         // size filter logic
         tempRooms = tempRooms.filter(item => item.size >= minSize && item.size <= maxSize)
         // breakfast checkbox
-        if(breakfast){
+        if (breakfast) {
             tempRooms = tempRooms.filter(item => item.breakfast)
         }
         // pets checkbox
-        if(pets){
+        if (pets) {
             tempRooms = tempRooms.filter(item => item.pets)
         }
 
