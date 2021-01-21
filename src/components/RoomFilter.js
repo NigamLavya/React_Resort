@@ -10,7 +10,6 @@ function getUniqueValues(items, value) {
 
 export default function RoomFilter() {
     const context = useContext(RoomContext);
-    console.log(context);
     let { rooms, handleChange, type, capacity, price, maxPrice, minPrice, minSize, maxSize, breakfast, pets } = context;
 
     // type filter mapping
